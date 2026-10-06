@@ -2,18 +2,123 @@
 <html>
 <head>
     <title>My File Storage</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
+
 <body>
 
     <h1>MY FILE STORAGE</h1>
 
-    <p>My PDF & Image Storage Website</p>
+    <p>My PDF, Image & Video Storage Website</p>
 
-    <input type="file" accept=".pdf,image/*">
+    <button id="loginBtn">Login with Google</button>
+
+    <button id="logoutBtn" style="display:none;">
+        Logout
+    </button>
+
+    <p id="userInfo"></p>
+
+    <hr>
+
+    <input
+        type="file"
+        id="fileInput"
+        accept=".pdf,image/*,video/*"
+    >
 
     <br><br>
 
-    <button>Upload File</button>
+    <button id="uploadBtn">Upload File</button>
+
+    <script type="module">
+
+        import { initializeApp }
+        from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+        import {
+            getAuth,
+            GoogleAuthProvider,
+            signInWithPopup,
+            signOut,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD1r4F3t0YRhBvLqHvNJp9Td_SQwe_tNlA"
+            authDomain: "my-file-storage-3355a.firebaseapp.com",
+            projectId: "my-file-storage-3355a",
+            storageBucket: "my-file-storage-3355a.firebasestorage.app",
+            messagingSenderId: "886612701667",
+            appId: "1:886612701667:web:4954a36d512355ed1bb0d6"
+        };
+
+
+        const app = initializeApp(firebaseConfig);
+
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+
+        const loginBtn = document.getElementById("loginBtn");
+        const logoutBtn = document.getElementById("logoutBtn");
+        const userInfo = document.getElementById("userInfo");
+
+
+        loginBtn.onclick = async () => {
+
+            try {
+
+                await signInWithPopup(auth, provider);
+
+            } catch (error) {
+
+                alert("Login failed: " + error.message);
+
+            }
+
+        };
+
+
+        logoutBtn.onclick = async () => {
+
+            await signOut(auth);
+
+        };
+
+
+        onAuthStateChanged(auth, (user) => {
+
+            if (user) {
+
+                userInfo.innerText =
+                    "Logged in as: " + user.email;
+
+                loginBtn.style.display = "none";
+                logoutBtn.style.display = "inline-block";
+
+            } else {
+
+                userInfo.innerText = "Please login";
+
+                loginBtn.style.display = "inline-block";
+                logoutBtn.style.display = "none";
+
+            }
+
+        });
+
+
+        document.getElementById("uploadBtn").onclick = () => {
+
+            alert(
+                "Login is working. Online file storage will be added next."
+            );
+
+        };
+
+    </script>
 
 </body>
-</html>
+    </html>
